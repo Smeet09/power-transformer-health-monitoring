@@ -1,0 +1,1117 @@
+{
+  "thermal_iec60076_7": {
+    "period_hours": 17420.0,
+    "loss_of_life_hours": 3215.442768437554,
+    "equivalent_ageing_factor": 0.18458339658080103,
+    "life_consumed_pct": 1.7863570935764188,
+    "normal_life_hours": 180000,
+    "max_hot_spot_c": 136.75290032340146,
+    "p99_hot_spot_c": 107.64483935838268,
+    "max_top_oil_c": 94.18499940742713,
+    "paper": "non_upgraded"
+  },
+  "forecast": {
+    "causal": {
+      "validation_MAE": 1.3671536112809615,
+      "test": {
+        "MAE": 1.7159206649492538,
+        "RMSE": 2.1648832431555904
+      },
+      "MAE_improvement_vs_best_baseline_pct": 0.09595964966819803
+    },
+    "baselines_test": {
+      "Persistence (24 h seasonal naive)": {
+        "MAE": 1.7175688379889982,
+        "RMSE": 2.2370136722956087
+      },
+      "Seasonal naive 7 d": {
+        "MAE": 2.99741427375807,
+        "RMSE": 3.8494033686369913
+      },
+      "Trailing 24 h mean": {
+        "MAE": 1.932247492529218,
+        "RMSE": 2.4820380764107814
+      }
+    },
+    "baselines_validation_MAE": {
+      "Persistence (24 h seasonal naive)": 1.4239996498554117
+    },
+    "split": {
+      "train": [
+        "2016-07-08 00:00:00",
+        "2017-10-30 23:45:00"
+      ],
+      "validation": [
+        "2017-11-01 00:00:00",
+        "2017-12-30 23:45:00"
+      ],
+      "test": [
+        "2018-01-01 00:00:00",
+        "2018-06-25 19:45:00"
+      ],
+      "n_train": 46080,
+      "n_valid": 5760,
+      "n_test": 16880
+    },
+    "feature_importance_top10": {
+      "d_mean_672": 0.22210000455379486,
+      "d_seasonal_7d": 0.10019999742507935,
+      "d_lag_672": 0.06930000334978104,
+      "d_lag_288": 0.05860000103712082,
+      "d_lag_192": 0.03999999910593033,
+      "MULL_seasonal_7d": 0.03929999843239784,
+      "dow": 0.03849999979138374,
+      "HULL_seasonal_7d": 0.033399999141693115,
+      "LULL_seasonal_7d": 0.029400000348687172,
+      "MUFL_seasonal_7d": 0.026200000196695328
+    },
+    "day_ahead": {
+      "validation_MAE": 1.4891187429189359,
+      "test": {
+        "MAE": 1.5971744782365698,
+        "RMSE": 2.0472127314347657
+      },
+      "MAE_improvement_vs_best_baseline_pct": 7.0095798834701295
+    }
+  },
+  "dga": {
+    "data": {
+      "rows_raw": 589,
+      "unmapped_labels": 0,
+      "removed_overlap_with_iec_tc10": 112,
+      "removed_duplicates": 4,
+      "rows_final": 473,
+      "class_counts": {
+        "PD": 64,
+        "D1": 65,
+        "D2": 97,
+        "T1": 107,
+        "T2": 56,
+        "T3": 84
+      }
+    },
+    "cv": {
+      "Duval Triangle 1 (rule-based)": {
+        "per_class": {
+          "PD": {
+            "precision": 0.792,
+            "recall": 0.297,
+            "f1-score": 0.432,
+            "support": 64.0
+          },
+          "D1": {
+            "precision": 0.436,
+            "recall": 0.677,
+            "f1-score": 0.53,
+            "support": 65.0
+          },
+          "D2": {
+            "precision": 0.738,
+            "recall": 0.464,
+            "f1-score": 0.57,
+            "support": 97.0
+          },
+          "T1": {
+            "precision": 0.806,
+            "recall": 0.467,
+            "f1-score": 0.592,
+            "support": 107.0
+          },
+          "T2": {
+            "precision": 0.329,
+            "recall": 0.464,
+            "f1-score": 0.385,
+            "support": 56.0
+          },
+          "T3": {
+            "precision": 0.669,
+            "recall": 0.964,
+            "f1-score": 0.79,
+            "support": 84.0
+          }
+        },
+        "macro_f1": 0.55,
+        "weighted_f1": 0.568,
+        "accuracy": 0.56,
+        "confusion_matrix": [
+          [
+            19,
+            12,
+            3,
+            8,
+            11,
+            4
+          ],
+          [
+            0,
+            44,
+            13,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            44,
+            45,
+            0,
+            1,
+            2
+          ],
+          [
+            5,
+            1,
+            0,
+            50,
+            41,
+            7
+          ],
+          [
+            0,
+            0,
+            0,
+            2,
+            26,
+            27
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            81
+          ]
+        ],
+        "labels": [
+          "PD",
+          "D1",
+          "D2",
+          "T1",
+          "T2",
+          "T3"
+        ]
+      },
+      "XGBoost - no imbalance handling": {
+        "per_class": {
+          "PD": {
+            "precision": 0.873,
+            "recall": 0.75,
+            "f1-score": 0.807,
+            "support": 64.0
+          },
+          "D1": {
+            "precision": 0.774,
+            "recall": 0.738,
+            "f1-score": 0.756,
+            "support": 65.0
+          },
+          "D2": {
+            "precision": 0.787,
+            "recall": 0.876,
+            "f1-score": 0.829,
+            "support": 97.0
+          },
+          "T1": {
+            "precision": 0.825,
+            "recall": 0.879,
+            "f1-score": 0.851,
+            "support": 107.0
+          },
+          "T2": {
+            "precision": 0.86,
+            "recall": 0.768,
+            "f1-score": 0.811,
+            "support": 56.0
+          },
+          "T3": {
+            "precision": 0.929,
+            "recall": 0.929,
+            "f1-score": 0.929,
+            "support": 84.0
+          }
+        },
+        "macro_f1": 0.83,
+        "weighted_f1": 0.836,
+        "accuracy": 0.837,
+        "confusion_matrix": [
+          [
+            48,
+            6,
+            6,
+            4,
+            0,
+            0
+          ],
+          [
+            2,
+            48,
+            13,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            7,
+            85,
+            2,
+            0,
+            3
+          ],
+          [
+            5,
+            1,
+            1,
+            94,
+            5,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            43,
+            2
+          ],
+          [
+            0,
+            0,
+            2,
+            3,
+            1,
+            78
+          ]
+        ],
+        "labels": [
+          "PD",
+          "D1",
+          "D2",
+          "T1",
+          "T2",
+          "T3"
+        ]
+      },
+      "XGBoost - balanced sample weights": {
+        "per_class": {
+          "PD": {
+            "precision": 0.875,
+            "recall": 0.766,
+            "f1-score": 0.817,
+            "support": 64.0
+          },
+          "D1": {
+            "precision": 0.758,
+            "recall": 0.769,
+            "f1-score": 0.763,
+            "support": 65.0
+          },
+          "D2": {
+            "precision": 0.81,
+            "recall": 0.876,
+            "f1-score": 0.842,
+            "support": 97.0
+          },
+          "T1": {
+            "precision": 0.864,
+            "recall": 0.888,
+            "f1-score": 0.876,
+            "support": 107.0
+          },
+          "T2": {
+            "precision": 0.833,
+            "recall": 0.804,
+            "f1-score": 0.818,
+            "support": 56.0
+          },
+          "T3": {
+            "precision": 0.951,
+            "recall": 0.929,
+            "f1-score": 0.94,
+            "support": 84.0
+          }
+        },
+        "macro_f1": 0.843,
+        "weighted_f1": 0.85,
+        "accuracy": 0.85,
+        "confusion_matrix": [
+          [
+            49,
+            6,
+            6,
+            3,
+            0,
+            0
+          ],
+          [
+            2,
+            50,
+            11,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            9,
+            85,
+            0,
+            1,
+            2
+          ],
+          [
+            5,
+            1,
+            0,
+            95,
+            6,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            8,
+            45,
+            2
+          ],
+          [
+            0,
+            0,
+            2,
+            3,
+            1,
+            78
+          ]
+        ],
+        "labels": [
+          "PD",
+          "D1",
+          "D2",
+          "T1",
+          "T2",
+          "T3"
+        ]
+      },
+      "XGBoost - SMOTE (train folds only)": {
+        "per_class": {
+          "PD": {
+            "precision": 0.82,
+            "recall": 0.781,
+            "f1-score": 0.8,
+            "support": 64.0
+          },
+          "D1": {
+            "precision": 0.781,
+            "recall": 0.769,
+            "f1-score": 0.775,
+            "support": 65.0
+          },
+          "D2": {
+            "precision": 0.819,
+            "recall": 0.887,
+            "f1-score": 0.851,
+            "support": 97.0
+          },
+          "T1": {
+            "precision": 0.862,
+            "recall": 0.879,
+            "f1-score": 0.87,
+            "support": 107.0
+          },
+          "T2": {
+            "precision": 0.88,
+            "recall": 0.786,
+            "f1-score": 0.83,
+            "support": 56.0
+          },
+          "T3": {
+            "precision": 0.929,
+            "recall": 0.929,
+            "f1-score": 0.929,
+            "support": 84.0
+          }
+        },
+        "macro_f1": 0.843,
+        "weighted_f1": 0.849,
+        "accuracy": 0.85,
+        "confusion_matrix": [
+          [
+            50,
+            6,
+            5,
+            3,
+            0,
+            0
+          ],
+          [
+            4,
+            50,
+            10,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            8,
+            86,
+            0,
+            1,
+            2
+          ],
+          [
+            7,
+            0,
+            1,
+            94,
+            4,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            8,
+            44,
+            3
+          ],
+          [
+            0,
+            0,
+            2,
+            3,
+            1,
+            78
+          ]
+        ],
+        "labels": [
+          "PD",
+          "D1",
+          "D2",
+          "T1",
+          "T2",
+          "T3"
+        ]
+      },
+      "Random forest - class_weight=balanced": {
+        "per_class": {
+          "PD": {
+            "precision": 0.909,
+            "recall": 0.781,
+            "f1-score": 0.84,
+            "support": 64.0
+          },
+          "D1": {
+            "precision": 0.825,
+            "recall": 0.723,
+            "f1-score": 0.77,
+            "support": 65.0
+          },
+          "D2": {
+            "precision": 0.791,
+            "recall": 0.897,
+            "f1-score": 0.841,
+            "support": 97.0
+          },
+          "T1": {
+            "precision": 0.848,
+            "recall": 0.832,
+            "f1-score": 0.84,
+            "support": 107.0
+          },
+          "T2": {
+            "precision": 0.75,
+            "recall": 0.804,
+            "f1-score": 0.776,
+            "support": 56.0
+          },
+          "T3": {
+            "precision": 0.919,
+            "recall": 0.94,
+            "f1-score": 0.929,
+            "support": 84.0
+          }
+        },
+        "macro_f1": 0.833,
+        "weighted_f1": 0.839,
+        "accuracy": 0.839,
+        "confusion_matrix": [
+          [
+            50,
+            5,
+            6,
+            3,
+            0,
+            0
+          ],
+          [
+            0,
+            47,
+            16,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            5,
+            87,
+            1,
+            1,
+            3
+          ],
+          [
+            5,
+            0,
+            0,
+            89,
+            11,
+            2
+          ],
+          [
+            0,
+            0,
+            1,
+            8,
+            45,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            2,
+            3,
+            79
+          ]
+        ],
+        "labels": [
+          "PD",
+          "D1",
+          "D2",
+          "T1",
+          "T2",
+          "T3"
+        ]
+      }
+    },
+    "selected_model": "XGBoost - balanced sample weights",
+    "iec_tc10": {
+      "n": 113,
+      "ML": {
+        "per_class": {
+          "PD": {
+            "precision": 0.4,
+            "recall": 1.0,
+            "f1-score": 0.571,
+            "support": 8.0
+          },
+          "D1": {
+            "precision": 0.812,
+            "recall": 0.52,
+            "f1-score": 0.634,
+            "support": 25.0
+          },
+          "D2": {
+            "precision": 0.857,
+            "recall": 0.894,
+            "f1-score": 0.875,
+            "support": 47.0
+          },
+          "T12": {
+            "precision": 0.722,
+            "recall": 0.812,
+            "f1-score": 0.765,
+            "support": 16.0
+          },
+          "T3": {
+            "precision": 1.0,
+            "recall": 0.588,
+            "f1-score": 0.741,
+            "support": 17.0
+          }
+        },
+        "macro_f1": 0.717,
+        "weighted_f1": 0.764,
+        "accuracy": 0.761,
+        "confusion_matrix": [
+          [
+            8,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            7,
+            13,
+            5,
+            0,
+            0
+          ],
+          [
+            2,
+            3,
+            42,
+            0,
+            0
+          ],
+          [
+            3,
+            0,
+            0,
+            13,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            5,
+            10
+          ]
+        ],
+        "labels": [
+          "PD",
+          "D1",
+          "D2",
+          "T12",
+          "T3"
+        ]
+      },
+      "Duval Triangle 1": {
+        "per_class": {
+          "PD": {
+            "precision": 0.8,
+            "recall": 1.0,
+            "f1-score": 0.889,
+            "support": 8.0
+          },
+          "D1": {
+            "precision": 0.955,
+            "recall": 0.84,
+            "f1-score": 0.894,
+            "support": 25.0
+          },
+          "D2": {
+            "precision": 0.92,
+            "recall": 0.979,
+            "f1-score": 0.948,
+            "support": 47.0
+          },
+          "T12": {
+            "precision": 0.833,
+            "recall": 0.625,
+            "f1-score": 0.714,
+            "support": 16.0
+          },
+          "T3": {
+            "precision": 0.833,
+            "recall": 0.882,
+            "f1-score": 0.857,
+            "support": 17.0
+          }
+        },
+        "macro_f1": 0.86,
+        "weighted_f1": 0.885,
+        "accuracy": 0.885,
+        "confusion_matrix": [
+          [
+            8,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            21,
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            46,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            10,
+            3
+          ],
+          [
+            0,
+            0,
+            0,
+            2,
+            15
+          ]
+        ],
+        "labels": [
+          "PD",
+          "D1",
+          "D2",
+          "T12",
+          "T3"
+        ]
+      },
+      "duval_DT_or_ND_count": 1
+    }
+  },
+  "health_index": {
+    "latest": {
+      "health_index": 45.0,
+      "band": "Poor",
+      "band_action": "Plan corrective maintenance soon",
+      "components": {
+        "thermal": 82.9,
+        "loading": 85.0,
+        "oil": 65.0,
+        "dga": 58.0
+      },
+      "top_drivers": [
+        {
+          "component": "events",
+          "parameter": "Buchholz Alarm (cap)",
+          "value": true,
+          "points_lost": 22.0
+        },
+        {
+          "component": "oil",
+          "parameter": "Moisture (ppm)",
+          "value": 34.6,
+          "points_lost": 4.6
+        },
+        {
+          "component": "dga",
+          "parameter": "CH4 (ppm)",
+          "value": 446.4,
+          "points_lost": 4.4
+        }
+      ],
+      "dga_diagnosis": {
+        "status": "Abnormal",
+        "ml_class": "T2",
+        "ml_probability": 0.996,
+        "duval_triangle_1": "T2"
+      }
+    },
+    "detection": {
+      "fault_onset": "2018-01-27",
+      "first_dga_abnormal": "2018-04-10",
+      "first_band_fair_or_worse": "2018-04-10",
+      "buchholz_alarm": "2018-06-16",
+      "lead_days_before_buchholz": 67,
+      "ml_class_at_detection": "T2",
+      "duval_at_detection": "T2",
+      "pre_onset_days": 575,
+      "pre_onset_dga_false_alarms": 0
+    },
+    "band_days": {
+      "Very Good": 612,
+      "Fair": 68,
+      "Good": 35,
+      "Poor": 11
+    },
+    "examples": [
+      {
+        "date": "2016-07-01",
+        "health_index": "100.0",
+        "band": "Very Good",
+        "S_thermal": "100.0",
+        "S_loading": "100.0",
+        "S_oil": "nan",
+        "S_dga": "100.0",
+        "dga_status": "Normal",
+        "ml_class": "T1",
+        "duval": "Normal",
+        "driver_1": "Hot-spot max (C) = 57.4 (-0.0)",
+        "driver_2": "Ageing rate V (30 d mean) = 0.0 (-0.0)",
+        "driver_3": "OTI/WTI alarms (30 d) = 0.0 (-0.0)"
+      },
+      {
+        "date": "2017-07-01",
+        "health_index": "100.0",
+        "band": "Very Good",
+        "S_thermal": "100.0",
+        "S_loading": "100.0",
+        "S_oil": "100.0",
+        "S_dga": "100.0",
+        "dga_status": "Normal",
+        "ml_class": "T1",
+        "duval": "Normal",
+        "driver_1": "Hot-spot max (C) = 70.6 (-0.0)",
+        "driver_2": "Ageing rate V (30 d mean) = 0.0 (-0.0)",
+        "driver_3": "OTI/WTI alarms (30 d) = 0.0 (-0.0)"
+      },
+      {
+        "date": "2018-01-12",
+        "health_index": "99.4",
+        "band": "Very Good",
+        "S_thermal": "100.0",
+        "S_loading": "97.1",
+        "S_oil": "100.0",
+        "S_dga": "100.0",
+        "dga_status": "Normal",
+        "ml_class": "T1",
+        "duval": "Normal",
+        "driver_1": "Peak load (pu, 24 h) = 0.8 (-0.6)",
+        "driver_2": "Hot-spot max (C) = 81.4 (-0.0)",
+        "driver_3": "Ageing rate V (30 d mean) = 0.0 (-0.0)"
+      },
+      {
+        "date": "2018-04-12",
+        "health_index": "67.0",
+        "band": "Fair",
+        "S_thermal": "80.0",
+        "S_loading": "99.7",
+        "S_oil": "99.0",
+        "S_dga": "58.0",
+        "dga_status": "Abnormal",
+        "ml_class": "T2",
+        "duval": "T2",
+        "driver_1": "Fault type T2 (severity cap) = T2 (-14.0)",
+        "driver_2": "Active T2 fault (overall cap) = T2 (-13.0)",
+        "driver_3": "OTI/WTI alarms (30 d) = 14.0 (-5.0)"
+      },
+      {
+        "date": "2018-06-01",
+        "health_index": "67.0",
+        "band": "Fair",
+        "S_thermal": "80.0",
+        "S_loading": "89.3",
+        "S_oil": "65.0",
+        "S_dga": "58.0",
+        "dga_status": "Abnormal",
+        "ml_class": "T2",
+        "duval": "T2",
+        "driver_1": "Fault type T2 (severity cap) = T2 (-9.6)",
+        "driver_2": "OTI/WTI alarms (30 d) = 28.0 (-5.0)",
+        "driver_3": "Moisture (ppm) = 34.6 (-4.6)"
+      },
+      {
+        "date": "2018-06-26",
+        "health_index": "45.0",
+        "band": "Poor",
+        "S_thermal": "82.9",
+        "S_loading": "85.0",
+        "S_oil": "65.0",
+        "S_dga": "58.0",
+        "dga_status": "Abnormal",
+        "ml_class": "T2",
+        "duval": "T2",
+        "driver_1": "Buchholz Alarm (cap) = True (-22.0)",
+        "driver_2": "Moisture (ppm) = 34.6 (-4.6)",
+        "driver_3": "CH4 (ppm) = 446.4 (-4.4)"
+      }
+    ]
+  },
+  "mlops": {
+    "data_drift_last_30d_vs_train": {
+      "ot": {
+        "psi": 8.068,
+        "drift": true
+      },
+      "d_mean_672": {
+        "psi": 0.455,
+        "drift": true
+      },
+      "d_seasonal_7d": {
+        "psi": 0.622,
+        "drift": true
+      },
+      "HUFL_dev_24h": {
+        "psi": 0.322,
+        "drift": true
+      },
+      "std_96": {
+        "psi": 2.477,
+        "drift": true
+      }
+    },
+    "drift_context": {
+      "reference_window": [
+        "2017-05-26",
+        "2017-06-25"
+      ],
+      "ot_mean_reference": 18.2,
+      "ot_mean_recent": 9.6
+    },
+    "forecast_performance_drift": {
+      "validation_mae": 1.3671536112809615,
+      "threshold_ratio": 1.5,
+      "max_ratio": 2.17,
+      "days_in_breach": 37,
+      "first_breach": "2018-01-09 18:15:00",
+      "latest_ratio": 1.18
+    },
+    "retraining_triggers_now": [
+      "Data drift (PSI > 0.2) on: ot, d_mean_672, d_seasonal_7d, HUFL_dev_24h, std_96"
+    ]
+  },
+  "advisory": {
+    "as_of": "2018-06-26",
+    "health_index": 45.0,
+    "band": "Poor",
+    "components": {
+      "thermal": 82.9,
+      "loading": 85.0,
+      "oil": 65.0,
+      "dga": 58.0
+    },
+    "top_drivers": [
+      {
+        "component": "events",
+        "parameter": "Buchholz Alarm (cap)",
+        "value": true,
+        "points_lost": 22.0
+      },
+      {
+        "component": "oil",
+        "parameter": "Moisture (ppm)",
+        "value": 34.6,
+        "points_lost": 4.6
+      },
+      {
+        "component": "dga",
+        "parameter": "CH4 (ppm)",
+        "value": 446.4,
+        "points_lost": 4.4
+      }
+    ],
+    "top_risk": "Thermal fault 300-700 C (ML: T2, Duval Triangle 1: T2)",
+    "recommended_action": "Typical of bad joints, circulating currents in core/clamps or OLTC contacts: confirm with lab DGA, IR thermography of bushings/OLTC, winding resistance + core-insulation (megger) test at the next planned outage; cap loading at 0.8 pu until resolved. Buchholz gas alarm in last 30 days: sample Buchholz gas and analyse with oil DGA before any re-energisation after trip.",
+    "urgency": "HIGH - within 2 weeks",
+    "events_30d": [
+      "BUCHHOLZ_ALARM",
+      "WTI_ALARM"
+    ],
+    "life": {
+      "period_hours": 17420.0,
+      "loss_of_life_hours": 3215.442768437554,
+      "equivalent_ageing_factor": 0.18458339658080103,
+      "life_consumed_pct": 1.7863570935764188,
+      "normal_life_hours": 180000,
+      "max_hot_spot_c": 136.75290032340146,
+      "p99_hot_spot_c": 107.64483935838268,
+      "max_top_oil_c": 94.18499940742713,
+      "paper": "non_upgraded"
+    },
+    "cost_benefit": {
+      "failure_cost_inr": 34800000,
+      "probability_of_failure_12m": 0.12,
+      "expected_loss_no_action_inr": 4176000.0,
+      "action_cost_inr": 1358000,
+      "expected_loss_with_action_inr": 1252800.0000000002,
+      "net_benefit_inr": 1565200.0,
+      "benefit_cost_ratio": 2.1525773195876288
+    }
+  },
+  "rag_eval": {
+    "accuracy_of_answer_or_refuse": 1.0,
+    "rows": [
+      {
+        "question": "What does acetylene in transformer oil indicate?",
+        "expected_answerable": true,
+        "answered": true,
+        "correct_behaviour": true,
+        "mode": "llm",
+        "citations": [
+          "USBR FIST 3-30 Transformer Maintenance (2000) p.44"
+        ],
+        "answer": "Acetylene in transformer oil indicates an active arcing fault [2].\n\nSafety: perform any internal work only after isolation, earthing and permit-to-work per your utility's switching procedure."
+      },
+      {
+        "question": "How is a Buchholz relay used to detect transformer faults?",
+        "expected_answerable": true,
+        "answered": true,
+        "correct_behaviour": true,
+        "mode": "llm",
+        "citations": [
+          "USBR FIST 3-30 Transformer Maintenance (2000) p.23",
+          "USBR FIST 3-31 Transformer Diagnostics (2003) p.36"
+        ],
+        "answer": "If high eddy currents, local overheating, or partial discharges occur within the tank, bubbles of resultant gas rise to the top of the tank [3]. These gas bubbles migrate along the pipe between the tank and the conservator, entering the Buchholz relay and rising into the top chamber [3]. If the Buchholz relay overfills with gas and fails to activate an alarm or shutdown, gas will bypass the Buchholz relay and enter the backup relay, the bladder failure relay [4].\n\nSafety: perform any internal work only after isolation, earthing and permit-to-work per your utility's switching procedure."
+      },
+      {
+        "question": "What are the limits for dielectric breakdown voltage of in-service oil?",
+        "expected_answerable": true,
+        "answered": true,
+        "correct_behaviour": true,
+        "mode": "llm",
+        "citations": [
+          "USBR FIST 3-30 Transformer Maintenance (2000) p.70"
+        ],
+        "answer": "- For 69 kV and below: 26 kV min [1] - For >69 # 288 kV: 30 kV min [1] - For >288 kV: 25 kV min [1]\n\nSafety: perform any internal work only after isolation, earthing and permit-to-work per your utility's switching procedure."
+      },
+      {
+        "question": "How should moisture in transformer insulation be assessed?",
+        "expected_answerable": true,
+        "answered": true,
+        "correct_behaviour": true,
+        "mode": "llm",
+        "citations": [
+          "USBR FIST 3-30 Transformer Maintenance (2000) p.64"
+        ],
+        "answer": "Moisture in transformer insulation should be assessed based on how much moisture is in the oil (ppm) [2]. However, methods to determine moisture in the insulation based solely on DGA are inaccurate [2].\n\nSafety: perform any internal work only after isolation, earthing and permit-to-work per your utility's switching procedure."
+      },
+      {
+        "question": "What maintenance is needed for transformer cooling fans and radiators?",
+        "expected_answerable": true,
+        "answered": true,
+        "correct_behaviour": true,
+        "mode": "llm",
+        "citations": [
+          "USBR FIST 3-31 Transformer Diagnostics (2003) p.35",
+          "USBR FIST 3-30 Transformer Maintenance (2000) p.11"
+        ],
+        "answer": "[1] [3] Inspections of all isolation valves at the tops and bottoms of radiators are needed to ensure they are open. [3] Thermometers, oil pumps load current, oil flow indicators, fans, and pressure relief should be checked annually.\n\nSafety: perform any internal work only after isolation, earthing and permit-to-work per your utility's switching procedure."
+      },
+      {
+        "question": "What does a high CO2/CO ratio mean for paper insulation?",
+        "expected_answerable": true,
+        "answered": true,
+        "correct_behaviour": true,
+        "mode": "llm",
+        "citations": [
+          "USBR FIST 3-31 Transformer Diagnostics (2003) p.45"
+        ],
+        "answer": "A high CO2/CO ratio, specifically under 5, indicates abnormally high temperatures and rapidly deteriorating cellulose insulation [3].\n\nSafety: perform any internal work only after isolation, earthing and permit-to-work per your utility's switching procedure."
+      },
+      {
+        "question": "What is the capital of France?",
+        "expected_answerable": false,
+        "answered": false,
+        "correct_behaviour": true,
+        "mode": "guardrail",
+        "citations": [],
+        "answer": "I could not find support for this in the loaded O&M references (USBR FIST 3-30 / 3-31), so I will not answer it. Please rephrase as a transformer maintenance question or consult the OEM manual."
+      },
+      {
+        "question": "Who won the cricket world cup?",
+        "expected_answerable": false,
+        "answered": false,
+        "correct_behaviour": true,
+        "mode": "guardrail",
+        "citations": [],
+        "answer": "I could not find support for this in the loaded O&M references (USBR FIST 3-30 / 3-31), so I will not answer it. Please rephrase as a transformer maintenance question or consult the OEM manual."
+      },
+      {
+        "question": "Write me a poem about the sea.",
+        "expected_answerable": false,
+        "answered": false,
+        "correct_behaviour": true,
+        "mode": "guardrail",
+        "citations": [],
+        "answer": "I could not find support for this in the loaded O&M references (USBR FIST 3-30 / 3-31), so I will not answer it. Please rephrase as a transformer maintenance question or consult the OEM manual."
+      }
+    ]
+  }
+}

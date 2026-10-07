@@ -1,0 +1,48 @@
+# Default:  docker compose up --build
+#   The app container uses the Ollama already running on the host (Windows/macOS Docker Desktop
+#   reaches it at host.docker.internal). Light: no extra 3.8 GB image, no second model download.
+#   If Ollama is not running on the host, the RAG assistant falls back to cited extracts.
+#
+# Fully containerised LLM (machine without Ollama installed, ~6 GB extra download):
+#   OLLAMA_URL=http://ollama:11434 docker compose --profile ollama up --build
+#   (PowerShell: $env:OLLAMA_URL="http://ollama:11434"; docker compose --profile ollama up --build)
+services:
+  transformer-health:
+    build: .
+    image: transformer-health:1.0.0
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_URL=${OLLAMA_URL:-http://host.docker.internal:11434}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # makes the host reachable on Linux engines too
+    volumes:
+      # results land on the host so reports/figures can be opened directly
+      - ./outputs:/app/outputs
+      - ./reports:/app/reports
+      - ./models:/app/models
+
+  # ---- optional: containerised local LLM (enable with --profile ollama) ----
+  ollama:
+    profiles: ["ollama"]
+    image: ollama/ollama:latest
+    volumes:
+      - ollama-models:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  ollama-pull:
+    profiles: ["ollama"]
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=ollama:11434
+    entrypoint: ["ollama", "pull", "qwen2.5:3b"]
+
+volumes:
+  ollama-models:

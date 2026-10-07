@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maintenance Assistant</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --surface: #ffffff; --ink: #14181f; --ink2: #556070; --line: #dfe3e8;
+    --brand: #1f5fbf; --brand-ink: #ffffff; --user: #1f5fbf; --user-ink: #ffffff;
+    --bot: #ffffff; --refuse-bg: #fff4e5; --refuse-line: #f0b45a; --ok: #1b7f3b; --warn: #b26a00; --err: #c0392b;
+    --chip: #eef3fb; --chip-ink: #1f4f99; --code: #f1f3f5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121417; --surface: #1b1e23; --ink: #eef1f5; --ink2: #a3adba; --line: #2c3139;
+      --brand: #5b9bf0; --brand-ink: #0d1117; --user: #2d6fd6; --user-ink: #ffffff;
+      --bot: #1f232a; --refuse-bg: #2e2416; --refuse-line: #a8782f; --ok: #4cc27a; --warn: #e3a64a; --err: #ef6b5f;
+      --chip: #1e2a3d; --chip-ink: #9cc2ff; --code: #262b33;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  header { background: var(--surface); border-bottom: 1px solid var(--line); padding: 14px 16px; }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 18px; margin: 0; }
+  .sub { color: var(--ink2); font-size: 13px; margin-top: 2px; }
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink2); margin-top: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink2); }
+  .dot.ok { background: var(--ok); } .dot.warn { background: var(--warn); } .dot.err { background: var(--err); }
+  main { padding: 16px; padding-bottom: 150px; }
+  .intro { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+  .intro p { margin: 0 0 10px; color: var(--ink2); font-size: 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid transparent; background: var(--chip); color: var(--chip-ink); border-radius: 999px;
+          padding: 6px 12px; font-size: 13px; cursor: pointer; text-align: left; max-width: 100%; font-family: inherit; }
+  .chip:hover, .chip:focus-visible { border-color: var(--chip-ink); outline: none; }
+  .chip.off { background: transparent; border-color: var(--line); color: var(--ink2); }
+  .msg { display: flex; margin: 12px 0; }
+  .msg.user { justify-content: flex-end; }
+  .bubble { max-width: 88%; border-radius: 14px; padding: 10px 14px; border: 1px solid var(--line); }
+  .user .bubble { background: var(--user); color: var(--user-ink); border-color: transparent; border-bottom-right-radius: 4px; }
+  .bot .bubble { background: var(--bot); border-bottom-left-radius: 4px; }
+  .bot.refused .bubble { background: var(--refuse-bg); border-color: var(--refuse-line); }
+  .answer { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .answer sup a { color: var(--brand); text-decoration: none; font-weight: 600; }
+  .safety { margin-top: 8px; font-size: 12.5px; color: var(--ink2); border-top: 1px dashed var(--line); padding-top: 6px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; font-size: 12px; }
+  .badge { border-radius: 6px; padding: 2px 8px; background: var(--code); color: var(--ink2); }
+  .badge.llm { color: var(--ok); } .badge.extractive { color: var(--warn); } .badge.guardrail { color: var(--err); }
+  .cites { margin-top: 8px; font-size: 13px; }
+  .cites div { margin: 2px 0; }
+  .cites a { color: var(--brand); }
+  .typing { color: var(--ink2); font-size: 14px; }
+  .typing span { display: inline-block; animation: blink 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: .2s; } .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%, 80%, 100% { opacity: .2 } 40% { opacity: 1 } }
+  form { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); padding: 12px 16px; }
+  html, body { overflow-x: hidden; }
+  .row { display: flex; gap: 8px; }
+  .row > * { min-width: 0; }
+  textarea { flex: 1; width: 100%; resize: none; overflow-y: hidden; min-height: 46px; max-height: 140px; border: 1px solid var(--line); border-radius: 10px;
+             padding: 11px 12px; font: inherit; background: var(--bg); color: var(--ink); }
+  textarea:focus { outline: 2px solid var(--brand); outline-offset: 0; }
+  button.send { background: var(--brand); color: var(--brand-ink); border: 0; border-radius: 10px; padding: 0 18px;
+                font-weight: 600; font-size: 15px; cursor: pointer; min-width: 84px; }
+  button.send:disabled { opacity: .5; cursor: progress; }
+  .hint { color: var(--ink2); font-size: 12px; margin-top: 6px; }
+  .links { font-size: 12px; margin-top: 6px; }
+  .links a { color: var(--brand); margin-right: 12px; }
+  @media (max-width: 560px) { .bubble { max-width: 100%; } button.send { min-width: 64px; padding: 0 12px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Transformer Maintenance Assistant</h1>
+    <div class="sub">Answers only from USBR FIST 3-30 &amp; 3-31 O&amp;M manuals, with page citations. Runs on a local LLM.</div>
+    <div class="status" id="status"><span class="dot" id="dot"></span><span id="statusText">Checking assistant…</span></div>
+    <div class="links"><a href="/docs">API docs</a><a href="/health-index/latest" target="_blank">Latest health index (JSON)</a></div>
+  </div>
+</header>
+
+<main class="wrap" id="chat" aria-live="polite">
+  <section class="intro">
+    <p>Ask a transformer maintenance question. Every sentence of an answer must be supported by the cited manual page; questions outside the manuals are refused.</p>
+    <div class="chips" id="chips">
+      <button class="chip" type="button">What does acetylene in transformer oil indicate?</button>
+      <button class="chip" type="button">How is a Buchholz relay used to detect transformer faults?</button>
+      <button class="chip" type="button">What maintenance is needed for transformer cooling fans and radiators?</button>
+      <button class="chip" type="button">What does a high CO2/CO ratio mean for paper insulation?</button>
+      <button class="chip off" type="button" title="Out-of-scope example: should be refused">What is the capital of France?</button>
+    </div>
+  </section>
+</main>
+
+<form id="form" autocomplete="off">
+  <div class="wrap">
+    <div class="row">
+      <label for="q" style="position:absolute;left:-9999px">Your question</label>
+      <textarea id="q" rows="1" maxlength="1000" placeholder="Ask about DGA, oil tests, Buchholz relay, cooling, inspections…"></textarea>
+      <button class="send" id="send" type="submit">Ask</button>
+    </div>
+    <div class="hint">Enter to send · Shift+Enter for a new line · local model on CPU: answers take about 10–40 s</div>
+  </div>
+</form>
+
+<script>
+const chat = document.getElementById('chat');
+const form = document.getElementById('form');
+const q = document.getElementById('q');
+const send = document.getElementById('send');
+
+const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const scrollDown = () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+function addUser(text) {
+  const el = document.createElement('div');
+  el.className = 'msg user';
+  el.innerHTML = `<div class="bubble">${esc(text)}</div>`;
+  chat.appendChild(el); scrollDown();
+}
+
+function addTyping() {
+  const el = document.createElement('div');
+  el.className = 'msg bot';
+  el.innerHTML = '<div class="bubble typing">Searching the manuals and writing an answer<span>.</span><span>.</span><span>.</span></div>';
+  chat.appendChild(el); scrollDown();
+  return el;
+}
+
+const MODE_LABEL = {
+  llm: 'Local LLM answer (grounding-checked)',
+  extractive: 'Quoted extracts (local LLM not running)',
+  guardrail: 'Refused by guardrail',
+  'llm-refused': 'Refused by model: not in sources',
+};
+
+function renderBot(el, r) {
+  const refused = !r.grounded;
+  el.className = 'msg bot' + (refused ? ' refused' : '');
+  const cites = r.citations || [];
+  const byId = Object.fromEntries(cites.map(c => [c.id, c]));
+  let text = r.answer || '';
+  let safety = '';
+  const sIdx = text.indexOf('Safety:');
+  if (sIdx >= 0) { safety = text.slice(sIdx).trim(); text = text.slice(0, sIdx).trim(); }
+  let html = esc(text).replace(/\[(\d+)\]/g, (m, n) => {
+    const c = byId[n];
+    return c && c.url ? `<sup><a href="${c.url}" target="_blank" title="${esc(c.document)}, p.${c.page}">[${n}]</a></sup>` : `<sup>[${n}]</sup>`;
+  });
+  let out = `<div class="answer">${html}</div>`;
+  if (safety) out += `<div class="safety">${esc(safety)}</div>`;
+  if (cites.length) {
+    out += '<div class="cites"><strong>Sources</strong>' + cites.map(c =>
+      `<div>[${c.id}] <a href="${c.url}" target="_blank">${esc(c.document)}, page ${c.page}</a></div>`).join('') + '</div>';
+  }
+  const meta = [`<span class="badge ${r.mode === 'llm' ? 'llm' : r.mode === 'extractive' ? 'extractive' : 'guardrail'}">${MODE_LABEL[r.mode] || r.mode}</span>`];
+  if (r.sentences_removed_by_grounding_check) meta.push(`<span class="badge">${r.sentences_removed_by_grounding_check} unsupported sentence(s) removed</span>`);
+  if (r.reason) meta.push(`<span class="badge">${esc(r.reason)}</span>`);
+  out += `<div class="meta">${meta.join('')}</div>`;
+  el.querySelector('.bubble').className = 'bubble';
+  el.querySelector('.bubble').innerHTML = out;
+  scrollDown();
+}
+
+async function ask(question) {
+  question = question.trim();
+  if (!question || send.disabled) return;
+  addUser(question);
+  q.value = ''; autosize();
+  send.disabled = true; q.disabled = true;
+  const el = addTyping();
+  try {
+    const res = await fetch('/ask', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ question }) });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    renderBot(el, await res.json());
+  } catch (e) {
+    el.className = 'msg bot refused';
+    el.querySelector('.bubble').className = 'bubble';
+    el.querySelector('.bubble').textContent = 'Could not reach the assistant: ' + e.message + '. Is the API running?';
+  } finally {
+    send.disabled = false; q.disabled = false; q.focus();
+  }
+}
+
+function autosize() { q.style.height = 'auto'; q.style.height = Math.min(q.scrollHeight, 140) + 'px'; }
+q.addEventListener('input', autosize);
+q.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(q.value); } });
+form.addEventListener('submit', e => { e.preventDefault(); ask(q.value); });
+document.getElementById('chips').addEventListener('click', e => { if (e.target.matches('.chip')) ask(e.target.textContent); });
+
+fetch('/healthz').then(r => r.json()).then(h => {
+  const rag = h.rag || {};
+  const dot = document.getElementById('dot'), t = document.getElementById('statusText');
+  if (rag.available) { dot.className = 'dot ok'; t.textContent = `Local LLM ready: ${rag.model} (Ollama)`; }
+  else { dot.className = 'dot warn'; t.textContent = 'Local LLM not running: answers will be quoted extracts (start Ollama for full answers)'; }
+}).catch(() => {
+  document.getElementById('dot').className = 'dot err';
+  document.getElementById('statusText').textContent = 'API not reachable';
+});
+q.focus();
+// deep link: /assistant?q=your+question asks it immediately (handy for demos)
+const preset = new URLSearchParams(location.search).get('q');
+if (preset) ask(preset);
+</script>
+</body>
+</html>

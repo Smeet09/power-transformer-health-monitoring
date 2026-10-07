@@ -1,0 +1,68 @@
+{
+  "snapshot": {
+    "thermal": {
+      "hot_spot_max_c": 103.30342265005903,
+      "ageing_rate_30d": 0.1504946904643105,
+      "alarm_count_30d": 6.0
+    },
+    "loading": {
+      "peak_load_pu": 0.9124818150848815,
+      "hours_over_1pu_30d": 0.0
+    },
+    "dga": {
+      "H2": 180.0,
+      "CH4": 446.4,
+      "C2H2": 2.6,
+      "C2H4": 339.0,
+      "C2H6": 157.2,
+      "CO": 545.3,
+      "CO2": 4482.1,
+      "tdcg_rate_ppm_per_day": 16.910000000000007
+    },
+    "oil": {
+      "moisture_ppm": 34.6,
+      "bdv_kv": 37.6
+    },
+    "events": {
+      "buchholz_alarm": true
+    }
+  },
+  "result": {
+    "health_index": 45.0,
+    "band": "Poor",
+    "band_action": "Plan corrective maintenance soon",
+    "components": {
+      "thermal": 82.9,
+      "loading": 85.0,
+      "oil": 65.0,
+      "dga": 58.0
+    },
+    "top_drivers": [
+      {
+        "component": "events",
+        "parameter": "Buchholz Alarm (cap)",
+        "value": true,
+        "points_lost": 22.0
+      },
+      {
+        "component": "oil",
+        "parameter": "Moisture (ppm)",
+        "value": 34.6,
+        "points_lost": 4.6
+      },
+      {
+        "component": "dga",
+        "parameter": "CH4 (ppm)",
+        "value": 446.4,
+        "points_lost": 4.4
+      }
+    ],
+    "dga_diagnosis": {
+      "status": "Abnormal",
+      "ml_class": "T2",
+      "ml_probability": 0.996,
+      "duval_triangle_1": "T2"
+    }
+  },
+  "as_of": "2018-06-26"
+}

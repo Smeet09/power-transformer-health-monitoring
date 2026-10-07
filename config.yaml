@@ -1,0 +1,186 @@
+# =====================================================================
+# Transformer Health Monitoring - single source of truth for ALL
+# assumptions (transformer parameters, thresholds, weights, costs).
+# Every number here is an ASSUMPTION unless marked "given in brief".
+# =====================================================================
+
+paths:
+  dataset_dir: Dataset
+  ett_csv: Dataset/ETTm1.csv
+  dga_train_xlsx: Dataset/dga_589.xlsx          # alan-456/transformer-fault-dataset (IEEE DataPort, E. Li 2019)
+  dga_iec_tc10_csv: "Dataset/data(Sheet1).csv"  # IEC TC 10 cases (Duval & dePablo 2001) via fedebenelli/DGANN
+  rag_docs:
+    - path: Dataset/fist3_30.pdf
+      title: "USBR FIST 3-30 Transformer Maintenance (2000)"
+    - path: Dataset/us-department-of-the-interior-bureau-of-reclamation-transformer-diagnostics_compress.pdf
+      title: "USBR FIST 3-31 Transformer Diagnostics (2003)"
+  outputs_dir: outputs
+  models_dir: models
+  reports_dir: reports
+
+random_seed: 42
+
+transformer:                 # given in brief
+  rating_mva: 10
+  hv_kv: 33
+  lv_kv: 11
+  vector_group: Dyn11
+  hv_rated_a: 175
+  lv_rated_a: 525
+  cooling: ONAN              # assumption
+  oltc_taps: 17              # assumption: taps 1..17, nominal 9, 1.25 % per step
+  oltc_nominal_tap: 9
+  oltc_step_pct: 1.25
+
+# ---------------------------------------------------------------------
+# Synthetic signals (not in public data)
+# ---------------------------------------------------------------------
+synthetic:
+  load_scaling_quantile: 0.995   # ETT HUFL quantile mapped to 1.0 pu
+  ambient:                       # site assumed at Ahmedabad, India
+    # monthly normal mean temperature (C), Jan..Dec - WMO/JMA Tokyo Climate Center, station 42647 Ahmadabad [R1]
+    monthly_mean_c: [20.1, 22.8, 27.7, 31.9, 34.5, 33.3, 29.8, 28.8, 29.3, 28.8, 25.1, 21.6]
+    daily_amplitude_c: 5.0       # warmest at 15:00
+    noise_c: 1.0
+  phase_imbalance_pct: 3.0
+  voltage_noise_pct: 1.0
+  sensor_noise_c: 0.5
+  # DGA timeline for the monitored unit: healthy, then an incipient
+  # thermal fault (T2-type, rising C2H4/CH4) in the last N days.
+  dga:
+    sample_every_days: 1          # online DGA monitor, daily reading
+    fault_onset_days_before_end: 150
+    fault_type: T2
+  oil:                            # scenario: oil drifts from "good" into the IEC 60422 "fair" band
+    tests_per_year: 4
+    moisture_start_ppm: 12
+    moisture_end_ppm: 35
+    bdv_start_kv: 62
+    bdv_end_kv: 35
+  events:
+    buchholz_alarm_days_before_end: 10   # gas accumulation from developing fault
+
+# ---------------------------------------------------------------------
+# IEC 60076-7 thermal model (ONAN, medium power transformer, Table 5
+# typical values) - assumption, replace with factory heat-run data.
+# x=0.8, y=1.3, H=1.3 for ON medium/large units corroborated by Kunicki et al. 2019 [R5];
+# R, gr, top-oil rise, time constants and k-constants: IEC 60076-7 (paywalled), not re-checked
+# against a public source.
+# ---------------------------------------------------------------------
+thermal:
+  x: 0.8          # oil exponent
+  y: 1.3          # winding exponent
+  R: 6.0          # load-loss / no-load-loss ratio at rated current
+  H: 1.3          # hot-spot factor
+  gr_k: 26.0      # average winding-to-oil gradient at rated current (K)
+  delta_theta_or_k: 52.0   # top-oil rise at rated load (K)
+  tau_o_min: 210.0
+  tau_w_min: 10.0
+  k11: 0.5
+  k21: 2.0
+  k22: 2.0
+  substep_min: 5.0         # integration step (< tau_w/2 for stability)
+  paper: non_upgraded      # non_upgraded (ref 98 C) | upgraded (ref 110 C)
+  normal_life_hours: 180000
+  alarms:                  # OTI/WTI alarm & trip settings - ASSUMPTION; in line with Indian utility
+                           # practice examples (WTI 100/110 C) [R9], not taken from a standard
+    oti_alarm_c: 85
+    oti_trip_c: 95
+    wti_alarm_c: 100
+    wti_trip_c: 110
+
+forecast:
+  horizon_steps: 96        # 24 h at 15 min
+  train_end: "2017-10-31 23:45"
+  valid_end: "2017-12-31 23:45"
+  # test = 2018-01-01 .. 2018-06-26
+  xgb:                     # chosen on the Nov-Dec 2017 validation window
+    n_estimators: 300
+    learning_rate: 0.03
+    max_depth: 3
+    subsample: 0.8
+    colsample_bytree: 0.7
+    min_child_weight: 50
+    reg_lambda: 5
+
+# ---------------------------------------------------------------------
+# DGA
+# ---------------------------------------------------------------------
+dga:
+  # "Normal / caution" boundary = IEC 60599 Annex A.1 90 % typical values for power transformers
+  # WITHOUT a communicating OLTC, upper end of each range, as tabulated in Duval & dePablo 2001, Table 1 [R2]:
+  #   H2 60-150, CH4 40-110, C2H2 3-50, C2H4 60-280, C2H6 50-90, CO 540-900, CO2 5100-13000
+  # Exception: C2H2 uses the LOWER end (3 ppm) because "generation of any amount of this gas above a
+  # few ppm indicates high-energy arcing" (USBR FIST 3-31, p.7 [R4]).
+  typical_ppm: {H2: 150, CH4: 110, C2H2: 3, C2H4: 280, C2H6: 90, CO: 900, CO2: 13000}
+  # Severity of each fault class (0 = none, 1 = most severe) -> caps DGA score
+  severity: {Normal: 0.0, PD: 0.3, T1: 0.3, T2: 0.6, DT: 0.7, D1: 0.6, T3: 0.9, D2: 1.0}
+  cv_folds: 5
+
+# ---------------------------------------------------------------------
+# Health index
+# ---------------------------------------------------------------------
+health_index:
+  weights: {dga: 0.35, thermal: 0.25, oil: 0.20, loading: 0.20}
+  bands:                       # lower bound inclusive
+    - {name: "Very Good", min: 85, action: "Normal maintenance"}
+    - {name: "Good",      min: 70, action: "Normal maintenance, watch trends"}
+    - {name: "Fair",      min: 50, action: "Increase monitoring, plan intervention"}
+    - {name: "Poor",      min: 30, action: "Plan corrective maintenance soon"}
+    - {name: "Very Poor", min: 0,  action: "Immediate action / consider de-rating or removal"}
+  # Piecewise-linear scoring: value at which score = 100 ("good") and 0 ("bad")
+  oil:          # IEC 60422:2013 category C (< 72.5 kV): good / fair / poor boundaries
+    moisture_ppm: {good: 30, bad: 40}   # water <30 good, 30-40 fair, >40 poor [R6, secondary source]
+    bdv_kv:       {good: 40, bad: 30}   # BDV >40 good, 30-40 fair, <30 poor - NOT verified from a public source
+  thermal:
+    hotspot_max_c: {good: 98, bad: 140}     # 98 C = rated; 140 C = IEC long-time emergency limit
+    aging_rate_30d: {good: 1.0, bad: 8.0}   # relative ageing factor V (mean, 30 days)
+    alarm_count_30d: {good: 0, bad: 10}
+  loading:
+    peak_pu: {good: 0.8, bad: 1.3}
+    hours_over_1pu_30d: {good: 0, bad: 60}
+  dga_gas_weights: {H2: 2, CH4: 3, C2H6: 3, C2H4: 3, C2H2: 5, CO: 1, CO2: 1}  # Jahromi et al. 2009 [R8] (from memory, not re-checked)
+  dga_tdcg_rate_ppm_day: {good: 10, bad: 30}   # <10 normal, 10-30 caution, >30 active fault - USBR FIST 3-31 Table 2 / p.7 [R4]
+  dga_bad_multiple: 4.0     # gas = 4x typical value -> score 0
+  caps:                      # protection events cap the overall index
+    dga_fault_overall_k: 55  # confirmed DGA fault caps the OVERALL HI at 100 - 55*severity:
+                             # PD/T1 -> 83.5 (Good), T2/D1 -> 67 (Fair), T3 -> 50.5 (Fair), D2 -> 45 (Poor)
+    buchholz_alarm: 45
+    buchholz_trip: 20
+    prd_operated: 20
+
+# ---------------------------------------------------------------------
+# MLOps
+# ---------------------------------------------------------------------
+mlops:
+  model_version: "1.0.0"
+  drift:
+    psi_threshold: 0.2              # PSI > 0.2 on any key input = significant drift
+    psi_bins: 10
+    mae_ratio_threshold: 1.5        # rolling 7-day forecast MAE > 1.5x validation MAE
+    rolling_days: 7
+
+# ---------------------------------------------------------------------
+# Maintenance advisory - cost assumptions (INR)
+# ---------------------------------------------------------------------
+costs_inr:
+  replacement_transformer: 15000000     # 1.5 crore, new 10 MVA 33/11 kV incl. install
+  repair_major_failure: 6000000         # rewind / major repair if failure occurs
+  outage_cost_per_hour: 40000           # unserved energy + penalties
+  outage_hours_failure: 720             # 30 days outage after an unplanned failure
+  outage_hours_planned: 24
+  inspection_and_oil_treatment: 350000  # internal inspection + oil filtration/degassing
+  extra_dga_sample: 8000
+  # Probability of failure within 12 months if no action (assumption by band)
+  pof_12m_by_band: {"Very Good": 0.005, "Good": 0.01, "Fair": 0.04, "Poor": 0.12, "Very Poor": 0.30}
+  action_effectiveness: 0.7             # fraction of failure risk removed by recommended action
+
+rag:
+  chunk_chars: 900
+  chunk_overlap: 150
+  top_k: 4
+  min_similarity: 0.08      # guardrail: refuse if best chunk is below this (plus domain-term check)
+  # Locally hosted open-source LLM (client requirement: no hosted API). Served by Ollama.
+  llm_model: qwen2.5:3b            # Qwen2.5-3B-Instruct, Apache-2.0; alternative: llama3.2:3b
+  ollama_url: http://localhost:11434   # overridden by env OLLAMA_URL (docker-compose sets http://ollama:11434)
+  llm_timeout_s: 180               # CPU inference of a 3B model takes ~10-60 s per answer

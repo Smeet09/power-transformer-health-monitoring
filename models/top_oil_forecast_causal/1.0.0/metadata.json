@@ -1,0 +1,68 @@
+{
+  "name": "top_oil_forecast_causal",
+  "version": "1.0.0",
+  "created_at": "2026-10-06T18:07:54+00:00",
+  "config_sha256": "9e9babcd85c291ab",
+  "data_fingerprints": {
+    "ETTm1.csv": "6ce1759b1a18e332"
+  },
+  "metrics": {
+    "validation_MAE": 1.3671536112809615,
+    "test": {
+      "MAE": 1.7159206649492538,
+      "RMSE": 2.1648832431555904
+    },
+    "MAE_improvement_vs_best_baseline_pct": 0.09595964966819803
+  },
+  "features": [
+    "d_lag_1",
+    "d_lag_2",
+    "d_lag_4",
+    "d_lag_8",
+    "d_lag_16",
+    "d_lag_24",
+    "d_lag_48",
+    "d_lag_96",
+    "d_lag_192",
+    "d_lag_288",
+    "d_lag_672",
+    "d_seasonal_7d",
+    "d_mean_16",
+    "d_mean_96",
+    "d_mean_672",
+    "std_96",
+    "HUFL_dev_24h",
+    "HUFL_seasonal_7d",
+    "HULL_dev_24h",
+    "HULL_seasonal_7d",
+    "MUFL_dev_24h",
+    "MUFL_seasonal_7d",
+    "MULL_dev_24h",
+    "MULL_seasonal_7d",
+    "LUFL_dev_24h",
+    "LUFL_seasonal_7d",
+    "LULL_dev_24h",
+    "LULL_seasonal_7d",
+    "hour_sin",
+    "hour_cos",
+    "dow"
+  ],
+  "horizon_steps": 96,
+  "split": {
+    "train": [
+      "2016-07-08 00:00:00",
+      "2017-10-30 23:45:00"
+    ],
+    "validation": [
+      "2017-11-01 00:00:00",
+      "2017-12-30 23:45:00"
+    ],
+    "test": [
+      "2018-01-01 00:00:00",
+      "2018-06-25 19:45:00"
+    ],
+    "n_train": 46080,
+    "n_valid": 5760,
+    "n_test": 16880
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "top_oil_forecast_day_ahead",
+  "version": "1.0.0",
+  "created_at": "2026-10-06T18:07:54+00:00",
+  "config_sha256": "9e9babcd85c291ab",
+  "data_fingerprints": {
+    "ETTm1.csv": "6ce1759b1a18e332"
+  },
+  "metrics": {
+    "validation_MAE": 1.4891187429189359,
+    "test": {
+      "MAE": 1.5971744782365698,
+      "RMSE": 2.0472127314347657
+    },
+    "MAE_improvement_vs_best_baseline_pct": 7.0095798834701295
+  },
+  "features": null,
+  "horizon_steps": 96,
+  "split": {
+    "train": [
+      "2016-07-08 00:00:00",
+      "2017-10-30 23:45:00"
+    ],
+    "validation": [
+      "2017-11-01 00:00:00",
+      "2017-12-30 23:45:00"
+    ],
+    "test": [
+      "2018-01-01 00:00:00",
+      "2018-06-25 19:45:00"
+    ],
+    "n_train": 46080,
+    "n_valid": 5760,
+    "n_test": 16880
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "dga_classifier",
+  "version": "1.0.0",
+  "created_at": "2026-10-06T18:08:37+00:00",
+  "config_sha256": "9e9babcd85c291ab",
+  "data_fingerprints": {
+    "dga_589.xlsx": "a51cd81e424a4974",
+    "data(Sheet1).csv": "9adc32ccca165a4a"
+  },
+  "metrics": {
+    "cv_macro_f1": 0.843,
+    "iec_tc10_macro_f1": 0.717
+  },
+  "selected": "XGBoost - balanced sample weights",
+  "classes": [
+    "D1",
+    "D2",
+    "PD",
+    "T1",
+    "T2",
+    "T3"
+  ]
+}
