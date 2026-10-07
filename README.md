@@ -352,24 +352,6 @@ Dockerfile, docker-compose.yml, requirements.txt, Makefile
 
 ---
 
-## Use of AI coding assistants
-
-**How Claude Code (Anthropic) was used:**
-- writing and refactoring code
-- tests and figures
-- the report generators
-- documentation
-
-**What the author did:**
-- chose the approach and design decisions
-- inspected the datasets, finding the IEC TC 10 overlap and the corrupted CSV export
-- checked assumptions against published sources
-- reviewed all results
-
-The author can explain and modify any part of the implementation.
-
----
-
 ## References
 
 Verification status:
